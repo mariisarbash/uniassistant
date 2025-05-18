@@ -1,0 +1,219 @@
+.statistics-container {
+    padding: 30px 0;
+  }
+  
+  .statistics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .time-range-selector {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .time-button {
+    padding: 8px 16px;
+    background-color: #f5f7fa;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  
+  .time-button:hover {
+    background-color: #e9ecef;
+  }
+  
+  .time-button.active {
+    background-color: #3a7bd5;
+    color: white;
+    border-color: #3a7bd5;
+  }
+  
+  .stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .stat-card {
+    background-color: white;
+    padding: 25px 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  }
+  
+  .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  .stat-label {
+    color: #666;
+    font-size: 14px;
+  }
+  
+  /* Weekly chart */
+  .weekly-chart {
+    background-color: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    margin-bottom: 30px;
+  }
+  
+  .weekly-chart h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
+  
+  .chart-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 200px;
+  }
+  
+  .chart-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .chart-bar {
+    width: 40px;
+    min-height: 4px;
+    position: relative;
+    margin-bottom: 10px;
+    transition: height 0.3s ease;
+    border-radius: 3px 3px 0 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  
+  .chart-value {
+    position: absolute;
+    top: -25px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .chart-label {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* Course stats */
+  .course-stats {
+    background-color: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  }
+  
+  .course-stats h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
+  
+  .course-stat-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .course-info {
+    width: 220px;
+    min-width: 220px;
+    padding-right: 20px;
+  }
+  
+  .course-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+  }
+  
+  .course-details {
+    display: flex;
+    gap: 8px;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .progress-bar-container {
+    flex: 1;
+    height: 12px;
+    background-color: #f2f2f2;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-right: 15px;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    border-radius: 6px;
+  }
+  
+  .percentage {
+    width: 50px;
+    text-align: right;
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .empty-state {
+    background-color: white;
+    border-radius: 12px;
+    padding: 50px 20px;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  }
+  
+  .empty-state p {
+    margin: 10px 0;
+    color: #666;
+    font-size: 16px;
+  }
+  
+  @media (max-width: 768px) {
+    .statistics-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .course-stat-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .course-info {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    
+    .progress-bar-container {
+      width: 100%;
+      margin-right: 0;
+      margin-bottom: 5px;
+    }
+    
+    .percentage {
+      width: 100%;
+      text-align: left;
+    }
+  }
