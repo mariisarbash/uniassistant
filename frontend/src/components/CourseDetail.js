@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from '../utils/api';  // Importa il file axios configurato
-import { Container, Row, Col, Card, Button, Nav, Spinner, Alert } from 'react-bootstrap';
-import { FaArrowLeft } from 'react-icons/fa';
+import axios from '../utils/api';
+import { Container, Button, Nav, Spinner, Alert } from 'react-bootstrap';
+import { FaArrowLeft, FaUser, FaGraduationCap, FaCalendarAlt } from 'react-icons/fa';
 
 // Components
 import LessonsList from './LessonsList';
@@ -36,8 +36,8 @@ const CourseDetail = () => {
 
   if (loading) {
     return (
-      <Container className="text-center my-5">
-        <Spinner animation="border" role="status">
+      <Container className="my-5 d-flex justify-content-center">
+        <Spinner animation="border" role="status" variant="primary">
           <span className="visually-hidden">Caricamento...</span>
         </Spinner>
       </Container>
@@ -61,43 +61,41 @@ const CourseDetail = () => {
   }
 
   return (
-    <Container className="my-4">
+    <Container className="course-detail-container">
       <Button 
-        variant="outline-secondary" 
-        className="mb-3"
+        variant="link" 
+        className="back-button p-0"
         onClick={() => navigate('/courses')}
       >
-  <FaArrowLeft className="me-2" /> Torna ai corsi
+        <FaArrowLeft size={14} /> Torna ai corsi
       </Button>
       
-      <Card className="mb-4 shadow-sm">
-        <Card.Header 
-          className="py-3" 
-          style={{ backgroundColor: course.color || '#3a7bd5', color: 'white' }}
-        >
-          <h2 className="mb-0">{course.name}</h2>
-          <div className="text-white-50">Prof. {course.professor} • {course.credits} CFU</div>
-        </Card.Header>
-        <Card.Body>
-          <p>{course.description}</p>
-          
-          <Row className="mt-3">
-            <Col md={6}>
-              <strong>Data inizio:</strong> {course.startDate ? new Date(course.startDate).toLocaleDateString() : 'Non specificata'}
-            </Col>
-            <Col md={6}>
-              <strong>Data fine:</strong> {course.endDate ? new Date(course.endDate).toLocaleDateString() : 'Non specificata'}
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-      
-      <Nav 
-        variant="tabs" 
-        className="mb-4"
-        activeKey={activeTab}
-        onSelect={(key) => setActiveTab(key)}
+      <div 
+        className="course-header" 
+        style={{ backgroundColor: course.color || '#3a7bd5' }}
       >
+        <h2>{course.name}</h2>
+        <div className="course-meta">
+          <div className="d-flex align-items-center gap-3 flex-wrap">
+            <div className="d-flex align-items-center">
+              <FaUser className="me-2" /> 
+              <span>Prof. {course.professor}</span>
+            </div>
+            <div className="d-flex align-items-center">
+              <FaGraduationCap className="me-2" /> 
+              <span>{course.credits} CFU</span>
+            </div>
+            {course.startDate && (
+              <div className="d-flex align-items-center">
+                <FaCalendarAlt className="me-2" /> 
+                <span>{new Date(course.startDate).toLocaleDateString()}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      <Nav variant="tabs" activeKey={activeTab} onSelect={setActiveTab}>
         <Nav.Item>
           <Nav.Link eventKey="lessons">Lezioni</Nav.Link>
         </Nav.Item>
