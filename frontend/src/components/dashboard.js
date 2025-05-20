@@ -9,7 +9,7 @@ function Dashboard() {
 
   useEffect(() => {
     // Fetch courses
-    fetch('http://localhost:5000/api/courses')
+    fetch('http://localhost:5001/api/courses')
       .then(response => response.json())
       .then(data => {
         setCourses(data);
@@ -21,7 +21,7 @@ function Dashboard() {
       });
 
     // Fetch study sessions
-    fetch('http://localhost:5000/api/study-sessions')
+    fetch('http://localhost:5001/api/study-sessions')
       .then(response => response.json())
       .then(data => {
         setSessions(data);

@@ -2,23 +2,23 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+const connectDB = require('./config/db');
+
+// Connect to database
+connectDB();
 
 // Import routes
 const courseRoutes = require('./routes/courseRoutes');
 const studySessionRoutes = require('./routes/studySessionRoutes');
+const lessonRoutes = require('./routes/lessonRoutes');
+const topicRoutes = require('./routes/topicRoutes');
 
 // Import middleware
 const errorHandler = require('./middleware/errorHandler');
 
-// Import DB connection
-const connectDB = require('./config/db');
-
 // Initialize app
 const app = express();
 const PORT = process.env.PORT || 5001;
-
-// Connect to database
-connectDB();
 
 // Middleware
 app.use(cors({
@@ -33,19 +33,13 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use('/api/courses', courseRoutes);
 app.use('/api/study-sessions', studySessionRoutes);
+app.use('/api/lessons', lessonRoutes);
+app.use('/api/topics', topicRoutes);
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
-  });
-}
-
-// Error handling middleware
+// Error handler
 app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server avviato sulla porta ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

@@ -17,7 +17,7 @@ function PomodoroTimer() {
   
   useEffect(() => {
     // Fetch courses
-    fetch('http://localhost:5000/api/courses')
+    fetch('http://localhost:5001/api/courses')
       .then(response => response.json())
       .then(data => {
         setCourses(data);
