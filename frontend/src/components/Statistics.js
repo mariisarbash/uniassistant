@@ -17,14 +17,14 @@ function Statistics() {
     setLoading(true);
     
     // Fetch all sessions
-    fetch('http://localhost:5000/api/study-sessions')
+    fetch('http://localhost:5001/api/study-sessions')
       .then(response => response.json())
       .then(sessions => {
         // Filter sessions by time range if needed
         const filteredSessions = filterSessionsByTimeRange(sessions, timeRange);
         
         // Fetch all courses
-        fetch('http://localhost:5000/api/courses')
+        fetch('http://localhost:5001/api/courses')
           .then(response => response.json())
           .then(courses => {
             const coursesMap = {};

@@ -31,7 +31,7 @@ function Dashboard() {
       });
   }, []);
 
-  // Get today's sessions
+  // Sessioni di oggi 
   const todaySessions = sessions.filter(session => {
     const sessionDate = new Date(session.date);
     const today = new Date();

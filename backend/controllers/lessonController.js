@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Lesson = require('../models/Lesson');
 const Course = require('../models/Course');
 
-// Ottieni tutte le lezioni di un corso
+// Ottieni tutte le lezioni di un corso 
 exports.getLessonsByCourse = async (req, res) => {
     try {
       const { courseId } = req.params;

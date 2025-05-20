@@ -4,7 +4,7 @@ const path = require('path');
 require('dotenv').config();
 const connectDB = require('./config/db');
 
-// Connect to database
+// Connect to database MongoDB 
 connectDB();
 
 // Import routes

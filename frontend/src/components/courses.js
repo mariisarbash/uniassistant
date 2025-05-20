@@ -8,7 +8,7 @@ function Courses() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Stati per il form di aggiunta/modifica
+  // Stati per il form di aggiunta/modifica dei corsi
   const [showForm, setShowForm] = useState(false);
   const [currentCourse, setCurrentCourse] = useState({
     name: '',

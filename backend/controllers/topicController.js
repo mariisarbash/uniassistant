@@ -1,7 +1,7 @@
 const Topic = require('../models/Topic');
 const Course = require('../models/Course');
 
-// Ottieni tutti i topic di un corso
+// Ottieni tutti i topic di un corso - per il programma 
 exports.getTopicsByCourse = async (req, res) => {
   try {
     const topics = await Topic.find({ courseId: req.params.courseId });

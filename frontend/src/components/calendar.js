@@ -14,11 +14,11 @@ function Calendar() {
 
   useEffect(() => {
     // Fetch study sessions
-    fetch('http://localhost:5000/api/study-sessions')
+    fetch('http://localhost:5001/api/study-sessions')
       .then(response => response.json())
       .then(data => {
         // Fetch courses to get colors
-        fetch('http://localhost:5000/api/courses')
+        fetch('http://localhost:5001/api/courses')
           .then(response => response.json())
           .then(coursesData => {
             // Create a lookup object for course colors

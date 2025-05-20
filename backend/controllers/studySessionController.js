@@ -1,6 +1,6 @@
 const StudySession = require('../models/StudySession');
 
-// Get all study sessions
+// Prendi tutte le sessioni di studio 
 exports.getStudySessions = async (req, res) => {
   try {
     const sessions = await StudySession.find().populate('course');

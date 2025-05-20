@@ -1,3 +1,5 @@
+// schema di una sessione di studio 
+
 const mongoose = require('mongoose');
 
 const studySessionSchema = new mongoose.Schema({

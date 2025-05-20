@@ -99,6 +99,7 @@ const LessonsList = ({ courseId }) => {
     }
   };
 
+  // Prova
   const handleEdit = (lesson) => {
     setCurrentLesson({
       ...lesson,

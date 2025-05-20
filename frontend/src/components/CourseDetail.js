@@ -7,7 +7,7 @@ import { FaArrowLeft } from 'react-icons/fa';
 // Components
 import LessonsList from './LessonsList';
 import TopicsList from './TopicsList';
-import './CourseDetail.css';
+import './CourseDetail.css'; 
 
 const CourseDetail = () => {
   const { id } = useParams();

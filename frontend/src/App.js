@@ -10,6 +10,7 @@ import Calendar from './components/calendar';
 import Statistics from './components/Statistics';
 import PomodoroTimer from './components/PomodoroTimer';
 
+// prova per salvare (cancellare commento in seguito)
 function App() {
   return (
     <Router>
