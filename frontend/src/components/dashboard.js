@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaCalendarDay, FaChartLine, FaBook, FaTools, FaClock, FaUserGraduate } from 'react-icons/fa';
+import { Container, Row, Col, Card, Spinner } from 'react-bootstrap';
+import { FaClock, FaCoffee, FaTint } from 'react-icons/fa';
 import axios from '../utils/api';
 import './dashboard.css';
 
@@ -30,7 +31,7 @@ function Dashboard() {
         console.error('Error fetching sessions:', error);
       });
   }, []);
-
+  
   // Sessioni di oggi 
   const todaySessions = sessions.filter(session => {
     const sessionDate = new Date(session.date);
@@ -38,176 +39,199 @@ function Dashboard() {
     return sessionDate.setHours(0,0,0,0) === today.setHours(0,0,0,0);
   });
 
+  // Sessioni future (prossimi impegni)
+  const upcomingSessions = sessions.filter(session => {
+    const sessionDate = new Date(session.date);
+    const today = new Date();
+    return sessionDate > today;
+  }).sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 3);
+
+  // Calcola progresso per corso
+  const courseProgress = courses.map(course => {
+    const courseSessions = sessions.filter(session => session.course === course._id);
+    const totalMinutes = courseSessions.reduce((total, session) => total + (session.duration || 0), 0);
+    return {
+      ...course,
+      totalMinutes,
+      sessionsCount: courseSessions.length
+    };
+  }).sort((a, b) => b.totalMinutes - a.totalMinutes).slice(0, 3);
+
+  // Mostra spinner di caricamento
+  if (loading) {
+    return (
+      <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "50vh" }}>
+        <div className="text-center">
+          <Spinner animation="border" role="status" variant="primary">
+            <span className="visually-hidden">Caricamento...</span>
+          </Spinner>
+          <p className="mt-3 text-muted">Caricamento dashboard...</p>
+        </div>
+      </Container>
+    );
+  }
+
   return (
-    <div className="dashboard-container">
-      <div className="welcome-banner">
-        <div className="container">
-          <h1>Benvenuto su UniAssistant</h1>
-          <p>Organizza i tuoi corsi e sessioni di studio in modo intelligente</p>
+    <Container className="dashboard-container py-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="dashboard-title">Dashboard</h1>
+        <div className="action-buttons">
+          <Link to="/study-sessions" className="btn btn-primary me-2">
+            <i className="me-2">+</i> Nuova Sessione
+          </Link>
+          <Link to="/courses" className="btn btn-outline-primary">
+            <i className="me-2">+</i> Nuova Materia
+          </Link>
         </div>
       </div>
       
-      <div className="container dashboard-content">
-        <div className="dashboard-grid">
-          <div className="dashboard-card">
-            <div className="card-header">
-              <div className="card-header-icon">
-                <FaCalendarDay size={20} />
-              </div>
-              <h2>Piano di Studio di Oggi</h2>
-            </div>
-            
-            <div className="card-body">
+      <Row>
+        <Col lg={8}>
+          <Card className="mb-4 shadow-sm">
+            <Card.Header>
+              <h5 className="m-0">Il tuo programma di oggi</h5>
+            </Card.Header>
+            <Card.Body className="p-0">
               {todaySessions.length > 0 ? (
-                <div className="sessions-list">
+                <div className="schedule-table">
+                  <div className="schedule-header">
+                    <div className="schedule-cell">Ora</div>
+                    <div className="schedule-cell">Materia</div>
+                    <div className="schedule-cell">Durata</div>
+                    <div className="schedule-cell">Stato</div>
+                  </div>
                   {todaySessions.map(session => (
-                    <div className="session-item" key={session._id}>
-                      <div className="session-time">
-                        <FaClock size={14} />
-                        <span>{new Date(session.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    <div className="schedule-row" key={session._id}>
+                      <div className="schedule-cell">
+                        {new Date(session.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>
-                      <div className="session-info">
-                        <h4>{session.course ? session.course.name : 'Corso non specificato'}</h4>
-                        <p>{session.topic}</p>
+                      <div className="schedule-cell">
+                        {session.course ? courses.find(c => c._id === session.course)?.name || 'Corso' : 'Corso non specificato'}
                       </div>
-                      <div className="session-duration">
+                      <div className="schedule-cell">
                         {session.duration} min
+                      </div>
+                      <div className="schedule-cell">
+                        <span className="status-badge pending">In programma</span>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="empty-state">
-                  <p>Nessuna sessione di studio pianificata per oggi.</p>
+                <div className="empty-schedule">
+                  <p>Non hai sessioni programmate per oggi</p>
                 </div>
               )}
-            </div>
-            
-            <div className="card-footer">
-              <Link to="/study-sessions" className="btn btn-primary btn-block">
-                Pianifica Sessione
-              </Link>
-            </div>
-          </div>
+            </Card.Body>
+          </Card>
           
-          <div className="dashboard-card">
-            <div className="card-header">
-              <div className="card-header-icon">
-                <FaChartLine size={20} />
-              </div>
-              <h2>I Tuoi Progressi</h2>
-            </div>
-            
-            <div className="card-body">
-              {sessions.length > 0 ? (
-                <div className="progress-stats">
-                  <div className="stat-item">
-                    <span className="stat-value">{sessions.length}</span>
-                    <span className="stat-label">Sessioni Totali</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-value">
-                      {sessions.reduce((acc, session) => acc + (session.duration || 0), 0)}
-                    </span>
-                    <span className="stat-label">Minuti Studiati</span>
-                  </div>
+          <Card className="mb-4 shadow-sm">
+            <Card.Header className="d-flex justify-content-between align-items-center">
+              <h5 className="m-0">Prossimi impegni</h5>
+              <Link to="/calendar" className="see-all-link">Vedi tutti</Link>
+            </Card.Header>
+            <Card.Body className="p-0">
+              {upcomingSessions.length > 0 ? (
+                <div className="upcoming-list">
+                  {upcomingSessions.map(session => (
+                    <div className="upcoming-item" key={session._id}>
+                      <div className="upcoming-date">
+                        <span className="day">{new Date(session.date).toLocaleDateString([], {day: 'numeric'})}</span>
+                        <span className="month">{new Date(session.date).toLocaleDateString([], {month: 'short'})}</span>
+                      </div>
+                      <div className="upcoming-details">
+                        <h6>{session.topic || 'Sessione di studio'}</h6>
+                        <div className="upcoming-info">
+                          <span>
+                            <FaClock className="me-1" size={12} />
+                            {new Date(session.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                          <span>
+                            {session.course ? courses.find(c => c._id === session.course)?.name || 'Corso' : 'Corso non specificato'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : (
-                <div className="empty-state">
-                  <p>Inizia a tracciare le tue sessioni di studio per vedere i progressi.</p>
+                <div className="empty-upcoming">
+                  <p>Non hai prossimi impegni programmati</p>
                 </div>
               )}
-            </div>
-            
-            <div className="card-footer">
-              <Link to="/statistics" className="btn btn-primary btn-block">
-                Vedi Statistiche Complete
-              </Link>
-            </div>
-          </div>
-        </div>
+            </Card.Body>
+          </Card>
+        </Col>
         
-        <div className="section-header">
-          <h3 className="section-title">
-            <FaBook size={18} /> I tuoi corsi
-          </h3>
+        <Col lg={4}>
+          <Card className="mb-4 shadow-sm">
+            <Card.Header>
+              <h5 className="m-0">Progresso materie</h5>
+            </Card.Header>
+            <Card.Body className="p-0">
+              {courseProgress.length > 0 ? (
+                <div className="courses-progress">
+                  {courseProgress.map(course => (
+                    <Link to={`/courses/${course._id}`} key={course._id} className="course-progress-item">
+                      <h6>{course.name}</h6>
+                      <div className="progress mb-2" style={{height: '6px'}}>
+                        <div 
+                          className="progress-bar" 
+                          role="progressbar" 
+                          style={{
+                            width: `${Math.min(course.totalMinutes / 500 * 100, 100)}%`,
+                            backgroundColor: course.color || '#3a7bd5'
+                          }}
+                        ></div>
+                      </div>
+                      <div className="d-flex justify-content-between small text-muted">
+                        <span>{course.totalMinutes} minuti</span>
+                        <span>{course.sessionsCount} sessioni</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="empty-courses">
+                  <p>Aggiungi corsi per vedere i tuoi progressi</p>
+                  <Link to="/courses" className="btn btn-sm btn-primary">
+                    Aggiungi Corso
+                  </Link>
+                </div>
+              )}
+            </Card.Body>
+          </Card>
           
-          <Link to="/courses" className="btn btn-primary">
-            Vedi Tutti i Corsi
-          </Link>
-        </div>
-        
-        {loading ? (
-          <div className="loading text-center py-4">Caricamento corsi...</div>
-        ) : courses.length > 0 ? (
-          <div className="courses-preview">
-            {courses.slice(0, 3).map(course => (
-              <div 
-                className="course-item" 
-                key={course._id}
-                style={{ borderLeftColor: course.color || '#3a7bd5' }}
-              >
-                <h3>{course.name}</h3>
-                <p className="course-professor">
-                  <FaUserGraduate size={14} className="me-2" style={{ opacity: 0.7 }} />
-                  {course.professor}
-                </p>
-                <p className="course-credits">
-                  {course.credits} CFU
-                </p>
-                <Link to={`/courses/${course._id}`} className="link-highlight">
-                  Visualizza dettagli
-                </Link>
+          <Card className="mb-4 shadow-sm">
+            <Card.Header>
+              <h5 className="m-0">Benessere</h5>
+            </Card.Header>
+            <Card.Body>
+              <div className="wellness-tips">
+                <div className="wellness-tip">
+                  <div className="wellness-icon coffee">
+                    <FaCoffee size={20} />
+                  </div>
+                  <div className="wellness-content">
+                    <h6>Pausa caffè</h6>
+                    <p>Consigliata tra 25 minuti</p>
+                  </div>
+                </div>
+                <div className="wellness-tip">
+                  <div className="wellness-icon water">
+                    <FaTint size={20} />
+                  </div>
+                  <div className="wellness-content">
+                    <h6>Idratazione</h6>
+                    <p>Ricordati di bere dell'acqua</p>
+                  </div>
+                </div>
               </div>
-            ))}
-            
-            {courses.length > 3 && (
-              <Link to="/courses" className="view-all-link">
-                Visualizza tutti i {courses.length} corsi
-              </Link>
-            )}
-          </div>
-        ) : (
-          <div className="empty-state">
-            <p>Non hai ancora aggiunto corsi. <Link to="/courses" className="link-highlight">Aggiungi il tuo primo corso</Link>.</p>
-          </div>
-        )}
-        
-        <div className="dashboard-tools">
-          <div className="section-header">
-            <h3 className="section-title">
-              <FaTools size={18} /> Strumenti di studio
-            </h3>
-          </div>
-          
-          <div className="tools-grid">
-            <div className="tool-card">
-              <h4>Timer Pomodoro</h4>
-              <p>Utilizza la tecnica Pomodoro per studiare con più efficienza e produttività.</p>
-              <Link to="/pomodoro" className="btn btn-primary">
-                Vai al Timer
-              </Link>
-            </div>
-            
-            <div className="tool-card">
-              <h4>Statistiche</h4>
-              <p>Visualizza i tuoi progressi e analizza il tuo studio con grafici dettagliati.</p>
-              <Link to="/statistics" className="btn btn-primary">
-                Vedi Statistiche
-              </Link>
-            </div>
-            
-            <div className="tool-card">
-              <h4>Calendario</h4>
-              <p>Visualizza il tuo piano di studio mensile e organizza le sessioni di studio.</p>
-              <Link to="/calendar" className="btn btn-primary">
-                Vai al Calendario
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
